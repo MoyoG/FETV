@@ -11,13 +11,9 @@ FETV is a public clip-level dataset for traffic-event and traffic-violation anal
 - Jun-Wei Hsieh
 - Munkhjargal Gochoo
 
-## Current Export Files
+## Dataset
 
-The current public dataset is:
-
-- `FETV_export_public_230526_1738/`: folder containing the 200 exported MP4 clips.
-- `FETV_export_public_230526_1738.json`: flat annotation JSON for the exported clips.
-- `FETV_export_public_230526_1738.zip`: archive of the exported clips.
+[Link to download dataset](https://drive.google.com/drive/folders/1VMbtNo6zzWzjxVztzy842cn7xQ0rv25G?usp=drive_link)
 
 ## Dataset Size
 
