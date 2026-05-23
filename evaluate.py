@@ -182,11 +182,22 @@ def _align_by_clip_name(gt_rows: list[dict], sub_rows: list[dict]) -> tuple[list
             file=sys.stderr,
         )
     return aligned_gt, aligned_sub
-def _time_to_seconds(t: str) -> float:
-    """Convert a HH:MM:SS time string to total seconds."""
-    parts = t.strip().split(":")
-    h, m, s = int(parts[0]), int(parts[1]), float(parts[2])
+
+
+def _time_to_seconds(t: str) -> Optional[float]:
+    """Convert a valid HH:MM:SS time string to total seconds."""
+    try:
+        parts = str(t).strip().split(":")
+        if len(parts) != 3:
+            return None
+        h, m, s = int(parts[0]), int(parts[1]), float(parts[2])
+    except (TypeError, ValueError):
+        return None
+    if not (0 <= h <= 23 and 0 <= m <= 59 and 0 <= s < 60):
+        return None
     return h * 3600 + m * 60 + s
+
+
 def _detect_fields(first_violation: dict) -> Tuple[List[str], Optional[str], Optional[str]]:
     """
     From the first violation entry, determine which fields are categorical,
@@ -232,6 +243,7 @@ def evaluate(groundtruth_path: str, submission_path: str) -> dict:
     # Determine evaluable fields from the FIRST ground-truth entry
     categorical_fields, description_field, time_field = _detect_fields(gt_violations[0])
     scores: dict[str, float] = {}
+    errors: list[str] = []
     # --- Categorical fields: macro F1 ---
     for field in categorical_fields:
         gt_values = [str(v.get(field, "")).strip().lower() for v in gt_violations]
@@ -247,17 +259,31 @@ def evaluate(groundtruth_path: str, submission_path: str) -> dict:
     # --- Time field: ±7 second tolerance ---
     if time_field:
         time_matches = []
-        for gt_v, sub_v in zip(gt_violations, sub_violations):
-            gt_t = gt_v.get(time_field, "")
-            sub_t = sub_v.get(time_field, "")
-            if gt_t.strip() and sub_t.strip():
-                diff = abs(_time_to_seconds(gt_t) - _time_to_seconds(sub_t))
+        for idx, (gt_v, sub_v) in enumerate(zip(gt_violations, sub_violations), start=1):
+            gt_raw = gt_v.get(time_field, "")
+            sub_raw = sub_v.get(time_field, "")
+            gt_seconds = _time_to_seconds(gt_raw)
+            sub_seconds = _time_to_seconds(sub_raw)
+            if gt_seconds is not None and sub_seconds is not None:
+                diff = abs(gt_seconds - sub_seconds)
                 time_matches.append(1.0 if diff <= TIME_TOLERANCE_SEC else 0.0)
             else:
                 time_matches.append(0.0)
+                clip_name = str(gt_v.get("clip_name") or sub_v.get("clip_name") or f"row {idx}")
+                invalid_parts = []
+                if gt_seconds is None:
+                    invalid_parts.append(f"ground truth {time_field}={gt_raw!r}")
+                if sub_seconds is None:
+                    invalid_parts.append(f"submission {time_field}={sub_raw!r}")
+                errors.append(
+                    f"Invalid time value for {clip_name}: "
+                    f"{', '.join(invalid_parts)}. Scored as incorrect."
+                )
         time_score = float(np.mean(time_matches)) if time_matches else 0.0
         scores[time_field] = time_score
         print(f"  {f'{time_field} (±7s tolerance)':30s}  score = {time_score:.4f}")
+        for error in errors:
+            print(f"ERROR: {error}", file=sys.stderr)
     # --- Description field: avg(CIDEr_norm, BERTScore) ---
     if description_field:
         gt_descs = [v.get(description_field, "") for v in gt_violations]
@@ -299,11 +325,14 @@ def evaluate(groundtruth_path: str, submission_path: str) -> dict:
     print(f"\n{'='*60}")
     print(f"  Final Score: {final_score:.4f}")
     print(f"{'='*60}")
-    return {
+    results = {
         "field_scores": scores,
         "categorical_mean": cat_mean,
         "final_score": final_score,
     }
+    if errors:
+        results["errors"] = errors
+    return results
 # ---------------------------------------------------------------------------
 # CLI
 # ---------------------------------------------------------------------------
@@ -330,5 +359,11 @@ def main():
     out_path = Path(args.submission).with_suffix(".results.json")
     out_path.write_text(json.dumps(results, indent=2), encoding="utf-8")
     print(f"\nDetailed results saved to {out_path}")
+    if results.get("errors"):
+        print(
+            f"\nEvaluation completed with {len(results['errors'])} error(s).",
+            file=sys.stderr,
+        )
+        raise SystemExit(1)
 if __name__ == "__main__":
     main()
