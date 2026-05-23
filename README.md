@@ -2,6 +2,8 @@
 
 FETV is a public clip-level dataset for traffic-event and traffic-violation analysis in fisheye surveillance video. The current public dataset contains 200 short MP4 clips and a flat JSON annotation file with one annotation row per clip.
 
+![Examples from the dataset](image.png)
+
 ## Authors
 
 - Ahmed Abduljawad
@@ -26,38 +28,74 @@ FETV is a public clip-level dataset for traffic-event and traffic-violation anal
 
 ## Annotation Format
 
-`FETV_export_public_230526_1738.json` is a flat JSON array. Each row describes one clip. The `clip_name` field is the clip identifier and each annotation is stored as a `question_*` / `answer_*` pair.
+`FETV_export_public_230526_1738.json` is a flat JSON array. Each row describes one clip. The `clip_name` field is the clip identifier and each annotation is stored as a `question_*` / `answer_*` pair. Two examples are shown below.
+
+![Driving Wrong way example](wrong_way.png)
 
 ```json
 {
-  "clip_name": "001_000.mp4",
-  "question_date": "What is the date of the event? Return format: YYYY-MM-DD.",
-  "answer_date": "2026-01-01",
-  "question_time": "What is the time of the event? Return format: HH:MM:SS.",
-  "answer_time": "12:34:56",
-  "question_violation_type": "What is the violation type? Choose one: wrong_way, uturn, jaywalking, red_light, lane_use_control, lane_discipline, no_violation.",
-  "answer_violation_type": "wrong_way",
-  "question_violator_type": "What is the violator type? Choose one: car, motorcycle, pedestrian, bus, truck, na.",
-  "answer_violator_type": "car",
-  "question_color": "What is the violator color? Choose one: dark, light, red, green, yellow, blue, mixed, na.",
-  "answer_color": "light",
-  "question_initial_position": "What is the initial position of the violator? Choose one: Top-Left, Top-Center, Top-Right, Middle-Left, Middle-Center, Middle-Right, Bottom-Left, Bottom-Center, Bottom-Right, na.",
-  "answer_initial_position": "Top-Left",
-  "question_final_position": "What is the final position of the violator? Choose one: Top-Left, Top-Center, Top-Right, Middle-Left, Middle-Center, Middle-Right, Bottom-Left, Bottom-Center, Bottom-Right, na.",
-  "answer_final_position": "Middle-Right",
-  "question_initial_lane": "What is the initial lane? Choose one: 1, 2, 3, 4, na.",
-  "answer_initial_lane": "1",
-  "question_final_lane": "What is the final lane? Choose one: 1, 2, 3, 4, na.",
-  "answer_final_lane": "2",
-  "question_intersection_type": "What is the intersection type? Choose one: T-intersection, four-way intersection.",
-  "answer_intersection_type": "T-intersection",
-  "question_weather": "What is the weather condition? Choose one: clear, rainy, cloudy.",
-  "answer_weather": "clear",
-  "question_light": "What is the light condition? Choose one: daylight, night.",
-  "answer_light": "daylight",
-  "question_description": "Write a concise third-person description of the event. Use only visible evidence.",
-  "answer_description": "Dummy event."
+  "clip_name": "002_014.mp4",
+    "question_date": "What is the date of the event? Return format: YYYY-MM-DD.",
+    "answer_date": "2018-07-17",
+    "question_time": "What is the time of the event? Return format: HH:MM:SS.",
+    "answer_time": "17:06:47",
+    "question_violation_type": "What is the violation type? Choose one: wrong_way, uturn, jaywalking, red_light, lane_use_control, lane_discipline, no_violation.",
+    "answer_violation_type": "wrong_way",
+    "question_violator_type": "What is the violator type? Choose one: car, motorcycle, pedestrian, bus, truck, na.",
+    "answer_violator_type": "motorcycle",
+    "question_color": "What is the violator color? Choose one: dark, light, red, green, yellow, blue, mixed, na.",
+    "answer_color": "red",
+    "question_initial_position": "What is the initial position of the violator? Choose one: Top-Left, Top-Center, Top-Right, Middle-Left, Middle-Center, Middle-Right, Bottom-Left, Bottom-Center, Bottom-Right, na.",
+    "answer_initial_position": "Top-Right",
+    "question_final_position": "What is the final position of the violator? Choose one: Top-Left, Top-Center, Top-Right, Middle-Left, Middle-Center, Middle-Right, Bottom-Left, Bottom-Center, Bottom-Right, na.",
+    "answer_final_position": "Middle-Left",
+    "question_initial_lane": "What is the initial lane? Choose one: 1, 2, 3, 4, na.",
+    "answer_initial_lane": "1",
+    "question_final_lane": "What is the final lane? Choose one: 1, 2, 3, 4, na.",
+    "answer_final_lane": "2",
+    "question_intersection_type": "What is the intersection type? Choose one: T-intersection, four-way intersection.",
+    "answer_intersection_type": "T-intersection",
+    "question_weather": "What is the weather condition? Choose one: clear, rainy, cloudy.",
+    "answer_weather": "clear",
+    "question_light": "What is the light condition? Choose one: daylight, night.",
+    "answer_light": "daylight",
+    "question_description": "Write a concise third-person description of the event. Use only visible evidence.",
+    "answer_description": "On 2018-07-17 at 17:06:47, a traffic incident occurred at a T-intersection with three road segments and clearly marked lanes. Under clear weather and bright daylight conditions, a red motorcycle committed a wrong-way violation. The motorcycle entered the intersection from the top-right segment via lane 1 and traveled across the intersection to the middle-left segment, exiting through lane 2. It moved against the designated traffic flow, while other scooters were visible moving normally in the background."
 }
+```
+
+![Jaywalking example](jaywalking.png)
+
+```json
+{
+    "clip_name": "005_003.mp4",
+    "question_date": "What is the date of the event? Return format: YYYY-MM-DD.",
+    "answer_date": "2018-07-17",
+    "question_time": "What is the time of the event? Return format: HH:MM:SS.",
+    "answer_time": "06:04:50",
+    "question_violation_type": "What is the violation type? Choose one: wrong_way, uturn, jaywalking, red_light, lane_use_control, lane_discipline, no_violation.",
+    "answer_violation_type": "wrong_way",
+    "question_violator_type": "What is the violator type? Choose one: car, motorcycle, pedestrian, bus, truck, na.",
+    "answer_violator_type": "motorcycle",
+    "question_color": "What is the violator color? Choose one: dark, light, red, green, yellow, blue, mixed, na.",
+    "answer_color": "dark",
+    "question_initial_position": "What is the initial position of the violator? Choose one: Top-Left, Top-Center, Top-Right, Middle-Left, Middle-Center, Middle-Right, Bottom-Left, Bottom-Center, Bottom-Right, na.",
+    "answer_initial_position": "Bottom-Left",
+    "question_final_position": "What is the final position of the violator? Choose one: Top-Left, Top-Center, Top-Right, Middle-Left, Middle-Center, Middle-Right, Bottom-Left, Bottom-Center, Bottom-Right, na.",
+    "answer_final_position": "Top-Right",
+    "question_initial_lane": "What is the initial lane? Choose one: 1, 2, 3, 4, na.",
+    "answer_initial_lane": "2",
+    "question_final_lane": "What is the final lane? Choose one: 1, 2, 3, 4, na.",
+    "answer_final_lane": "3",
+    "question_intersection_type": "What is the intersection type? Choose one: T-intersection, four-way intersection.",
+    "answer_intersection_type": "four-way intersection",
+    "question_weather": "What is the weather condition? Choose one: clear, rainy, cloudy.",
+    "answer_weather": "clear",
+    "question_light": "What is the light condition? Choose one: daylight, night.",
+    "answer_light": "daylight",
+    "question_description": "Write a concise third-person description of the event. Use only visible evidence.",
+    "answer_description": "On 2018-07-17 at 06:04:50, a four-way intersection with multiple lanes is shown under clear daylight conditions. A dark-colored motorcycle violates traffic rules by traveling the wrong way. It enters the intersection from the bottom-left section, initially in lane 2, and proceeds across the intersection to exit at the top-right section in lane 3. The motorcycle crosses the central area and the marked crosswalks, moving against the designated traffic flow."
+  }
 ```
 
 ## Fields
