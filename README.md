@@ -195,7 +195,7 @@ Ground truth may use the same answer-only structure as submissions. If a full an
 Categorical answer fields are evaluated with macro-averaged F1. The time field is evaluated as a binary match per row with a 7-second tolerance, then averaged. The description field is evaluated with the average of normalized CIDEr and BERTScore.
 
 ```text
-MacroF1 = mean(per-field macro-F1 scores and the time-tolerance score)
+MacroF1 = mean(per-field F1 scores and the time-tolerance score)
 DescriptionScore = (CIDEr_norm + BERTScore) / 2
 FinalScore = (MacroF1 + DescriptionScore) / 2
 ```
